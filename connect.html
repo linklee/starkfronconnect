@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>StarkNet Wallet Connection</title>
+</head>
+<body>
+  <h1>StarkNet Wallet Connection Example</h1>
+  
+  <script src="starkware-lib.min.js"></script>
+  <script>
+    const connectWallet = async () => {
+      try {
+        // Connect to the StarkNet wallet extension
+        const wallet = await starkware.connect();
+        const walletAddress = await wallet.getAccount();
+
+        console.log('Connected wallet address:', walletAddress);
+        
+        // Initialize contract and interact with it using the connected wallet
+        const starkProvider = new starkware.StarkwareProvider('https://starknet-YOUR_NETWORK_URL.rpc', 'starknet-YOUR_NETWORK');
+        const contractAddress = '0xYOUR_CONTRACT_ADDRESS';
+        const starkNetContractABI = [
+          // Define your contract's ABI here
+        ];
+
+        const starkNetContract = new starkware.Contract(starkProvider, starkNetContractABI, contractAddress);
+
+        // Example: Deposit funds into the contract
+        const depositAmount = 100; // Replace with the desired deposit amount
+        const tx = await starkNetContract.deposit(depositAmount).sign(wallet);
+        const result = await starkProvider.sendTransaction(tx);
+        console.log('Transaction result:', result);
+        
+        // Perform other interactions with the contract as needed
+        // ...
+
+      } catch (error) {
+        console.error('Wallet connection error:', error);
+      }
+    };
+
+    // Call connectWallet function when the page loads
+    window.onload = connectWallet;
+  </script>
+</body>
+</html>
